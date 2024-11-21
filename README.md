@@ -7,6 +7,7 @@ A Flask-based API for college football data, containerized with Docker and deplo
 - Docker installed locally
 - AWS CLI configured with appropriate credentials
 - AWS App Runner access configured
+- AWS S3 bucket access configured with appropriate IAM roles/permissions
 
 ## Local Development
 
@@ -17,7 +18,11 @@ source venv/bin/activate  # On Windows use: venv\Scripts\activate
 2. Install dependencies:
 pip install -r requirements.txt
 
-3. Run the application locally:
+3. Configure AWS credentials:
+- Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables
+- Or configure AWS CLI credentials file (~/.aws/credentials)
+
+4. Run the application locally:
 python -m src.cfb_api.app
 
 ## Docker Build and Run
@@ -42,7 +47,7 @@ The API will be available at http://localhost:8000
 
 3. Configure the service:
    - The service will use the configuration from apprunner.yaml
-   - No additional environment variables are required
+   - Set required AWS credentials as environment variables
    - The service will automatically scale based on traffic
 
 4. Deploy the service:
@@ -52,13 +57,43 @@ The API will be available at http://localhost:8000
 
 ## Environment Variables
 
-No environment variables are required for basic operation. The application uses default configurations suitable for both development and production environments.
+Required environment variables:
+- AWS_ACCESS_KEY_ID: AWS access key for S3 bucket access
+- AWS_SECRET_ACCESS_KEY: AWS secret key for S3 bucket access
+- AWS_DEFAULT_REGION: AWS region (e.g., us-east-1)
+
+## Project Structure
+
+src/cfb_api/
+├── app.py              # Main application file
+├── services/
+│   └── s3_service.py   # AWS S3 interaction service
+└── routes/
+    ├── images.py       # Image retrieval routes
+    └── items.py        # Item management routes
+
+tests/
+└── routes/
+    └── test_images.py  # Tests for image routes
 
 ## API Endpoints
 
+### Items API
 - GET /items - Returns list of all items
 - GET /items/<id> - Returns specific item by ID
 - POST /items - Creates a new item
+
+### Images API
+- GET /images - Retrieves an image from S3 bucket
+  - Query Parameters:
+    - bucket (required): S3 bucket name (e.g., connerbeckwith-images)
+    - path (required): Object key/path in bucket (e.g., headshot.jpg)
+  - Example: GET /images?bucket=connerbeckwith-images&path=headshot.jpg
+
+## Testing
+
+Run tests using pytest:
+pytest tests/
 
 ## Production Notes
 

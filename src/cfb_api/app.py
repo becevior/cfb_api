@@ -1,15 +1,15 @@
-from flask import Flask, jsonify, request
+from flask import Flask
 from werkzeug.exceptions import HTTPException
+from flask import jsonify
 
 app = Flask(__name__)
 
-# Sample data (replace with your database or other data source)
-data = {
-    "items": [
-        {"id": 1, "name": "Item 1"},
-        {"id": 2, "name": "Item 2"},
-    ]
-}
+# Import routes after app initialization to avoid circular imports
+from src.cfb_api.routes import items, images
+
+# Register blueprints
+app.register_blueprint(items.bp)
+app.register_blueprint(images.bp)
 
 # Error handler for HTTPExceptions
 @app.errorhandler(HTTPException)
@@ -33,30 +33,3 @@ def handle_exception(e):
         "description": str(e),
         "code": 500
     }), 500
-
-
-@app.route('/items', methods=['GET'])
-def get_items():
-    """Returns a list of items."""
-    return jsonify(data['items'])
-
-
-@app.route('/items/<int:item_id>', methods=['GET'])
-def get_item(item_id):
-    """Returns a single item by ID."""
-    for item in data['items']:
-        if item['id'] == item_id:
-            return jsonify(item)
-    return jsonify({"error": "Item not found"}), 404
-
-
-@app.route('/items', methods=['POST'])
-def create_item():
-    """Creates a new item."""
-    try:
-        new_item = request.get_json()
-        new_item['id'] = len(data['items']) + 1  # Assign a new ID
-        data['items'].append(new_item)
-        return jsonify(new_item), 201 # 201 Created
-    except Exception as e:
-        return jsonify({"error": "Invalid request data", "description": str(e)}), 400
