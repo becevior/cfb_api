@@ -60,4 +60,3 @@ def create_item():
         return jsonify(new_item), 201 # 201 Created
     except Exception as e:
         return jsonify({"error": "Invalid request data", "description": str(e)}), 400
-
