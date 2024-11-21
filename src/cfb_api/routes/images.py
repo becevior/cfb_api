@@ -7,7 +7,19 @@ bp = Blueprint('images', __name__)
 
 @bp.route('/images', methods=['GET'])
 def get_image_from_s3():
-    """Retrieve an image from S3 bucket based on query parameters."""
+    """
+    Retrieve an image from S3 bucket based on query parameters.
+    
+    Query Parameters:
+        bucket (str): Name of the S3 bucket
+        path (str): Object key/path in the bucket
+        
+    Returns:
+        flask.Response: Image file response or error JSON
+        
+    Example:
+        GET /images?bucket=my-bucket&path=images/photo.jpg
+    """
     bucket = request.args.get('bucket')
     path = request.args.get('path')
     

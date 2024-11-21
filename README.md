@@ -72,6 +72,10 @@ src/cfb_api/
     ├── images.py       # Image retrieval routes
     └── items.py        # Item management routes
 
+tests/
+└── routes/
+    └── test_images.py  # Tests for image routes
+
 ## API Endpoints
 
 ### Items API
@@ -85,6 +89,11 @@ src/cfb_api/
     - bucket (required): S3 bucket name (e.g., connerbeckwith-images)
     - path (required): Object key/path in bucket (e.g., headshot.jpg)
   - Example: GET /images?bucket=connerbeckwith-images&path=headshot.jpg
+
+## Testing
+
+Run tests using pytest:
+pytest tests/
 
 ## Production Notes
 
