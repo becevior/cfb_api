@@ -1,0 +1,13 @@
+version: 1.0
+runtime: python3
+
+build:
+  commands:
+    build:
+      - pip install -r requirements.txt
+
+run:
+  runtime-version: 3.11.0
+  command: gunicorn --workers=2 --threads=4 --worker-class=gthread --bind=0.0.0.0:8000 src.cfb_api.app:app
+  network:
+    port: 8000

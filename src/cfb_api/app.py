@@ -61,7 +61,3 @@ def create_item():
     except Exception as e:
         return jsonify({"error": "Invalid request data", "description": str(e)}), 400
 
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
